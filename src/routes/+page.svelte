@@ -36,7 +36,23 @@
   function onSendMessage(key, pos) {
       let msg = '{"action": "rotate", "args":["' + key +'",' + pos +']}'
       store.sendMessage(msg);
-      //message = "";
+  }
+
+  function arcTan2(x, y) {
+    let val = (Math.atan2(x, y) * (180 / Math.PI))
+    if (val < 0) {
+      val += 360
+    }
+    return val.toFixed(2)
+  }
+  function arcSin(x) {
+    const gravity = 9.80665
+    x *= -1
+    if (x >= gravity) {
+      x -= gravity
+    }
+    let val = (Math.asin(x/gravity) * (180 / Math.PI))
+    return val.toFixed(2)
   }
 </script>
 
@@ -61,9 +77,7 @@
       <th>heightPos</th>
       <th>rotationPos</th>
       <th>tiltPos</th>
-      <th>gyroXPos</th>
-      <th>gyroYPos</th>
-      <th>gyroZPos</th>
+      <th>arcSin(y,z)</th>
     </tr>
   </thead>
   <tbody>
@@ -72,9 +86,7 @@
         <td>{message.heightPos}</td>
         <td>{message.rotationPos}</td>
         <td>{message.tiltPos}</td>
-        <td>{message.gyroXPos}</td>
-        <td>{message.gyroYPos}</td>
-        <td>{message.gyroZPos}</td>
+        <td>{arcSin(message.gyroXAccel)}</td>
       </tr>
     {/each}
   </tbody>
