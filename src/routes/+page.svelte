@@ -12,17 +12,17 @@
   const PosSettings = [
     {
       value: "Height",
-      id: "height_value",
+      id: "height",
       type: "number",
     },
     {
       value: "Tilt",
-      id: "tilt_value",
+      id: "tilt",
       type: "number",
     },
     {
       value: "Rotation",
-      id: "rotation_value",
+      id: "rotation",
       type: "number",
     },
   ];
