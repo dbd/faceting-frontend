@@ -24,7 +24,7 @@
   };
 </script>
 
-<h1>Bot Controller</h1>
+<h1 class="font-sans">Bot Controller</h1>
 
 <div>
 {#each PosSettings as setting}
