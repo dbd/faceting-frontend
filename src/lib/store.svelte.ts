@@ -1,13 +1,20 @@
 import {writable} from 'svelte/store';
 
-  export interface StatusMessage {
-    tiltPos: number;
-    heightPos: number;
-    rotationPos: number;
-    gyroXAccel: number;
-    gyroYAccel: number;
-    gyroZAccel: number;
-  }
+export interface StatusMessage {
+  tiltPos: number;
+  heightPos: number;
+  rotationPos: number;
+  gyroXAccel: number;
+  gyroYAccel: number;
+  gyroZAccel: number;
+}
+
+export interface Servo {
+  id: string;
+  name: string;
+  presets: Array<number>;
+  increments: Array<number>;
+}
 
 export const websocketStore = (url: string) => {
   const {subscribe, set, update} = writable<string>('');
@@ -26,6 +33,10 @@ export const websocketStore = (url: string) => {
     socket.onmessage = (event) => {
       let statusMessage: StatusMessage = JSON.parse(event.data)
       statusMessages.push(statusMessage)
+      if (statusMessages.length > 50) {
+        statusMessages.shift()
+
+      }
       set(event.data);
     };
 
@@ -41,11 +52,19 @@ export const websocketStore = (url: string) => {
     }
   };
 
+  const sendPositionMessage = (key: string, pos: number) => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      let msg = '{"action": "rotate", "args":["' + key + '",' + pos + "]}";
+      socket.send(msg);
+    }
+  }
+
   connect(); // Connect on store creation
 
   return {
     subscribe,
     send,
     statusMessages,
+    sendPositionMessage,
   };
 };

@@ -1,42 +1,54 @@
 <script lang="ts">
-  import { websocketStore } from "$lib/store.svelte";
-  import Table from "$lib/table.svelte";
+  import {
+    Heading,
+    Button,
+    ButtonGroup,
+    Input,
+    DarkMode,
+    Label,
+    Card,
+    P,
+  } from "flowbite-svelte";
+  import { websocketStore, type Servo } from "$lib/store.svelte";
+  import TableComponent from "$lib/tableComponent.svelte";
+  import ServoCard from "$lib/cardComponent.svelte";
 
   //const websocket = websocketStore("ws://10.0.0.163:8080/ws");
   const websocket = websocketStore("ws://localhost:8080");
-
-  interface Servo {
-    id: string;
-    name: string;
-  }
-
-  let valueState = new Map<string, number>()
+  console.log(typeof websocket)
 
   const PosSettings: Servo[] = [
-    { id: "height", name: "Height" },
-    { id: "tilt", name: "Pitch" },
-    { id: "rotation", name: "Rotation" },
+    {
+      id: "height",
+      name: "Height",
+      presets: [0, 50, 100, 500],
+      increments: [10, 25, 50, 100, 250],
+    },
+    {
+      id: "tilt",
+      name: "Pitch",
+      presets: [0, 32.5, 45, 60, 90],
+      increments: [5, 10, 15, 20, 45],
+    },
+    {
+      id: "rotation",
+      name: "Rotation",
+      presets: [0, 15, 45, 90],
+      increments: [5, 15, 30, 45, 60],
+    },
   ];
 
-  function sendMessage(key: string, pos: number): void {
-    let msg = '{"action": "rotate", "args":["' + key +'",' + pos +']}'
-    websocket.send(msg);;
-  };
 </script>
 
-<h1 class="font-sans">Bot Controller</h1>
+<Heading tag="h1">Bot Controller</Heading>
+<DarkMode />
 
-<div>
-{#each PosSettings as setting}
-<p>{setting.name}</p>
-  <input type="setting.type" bind:value={valueState[setting.id]} />
-  <button
-    onclick={() =>
-      sendMessage(setting.id, valueState[setting.id])}
-  >
-  Set Pos
-  </button>
-{/each}
+<div class="grid grid-cols-2 gap-4 m-4">
+  <div>
+    {#each PosSettings as servo}
+      <ServoCard servo={servo} websocket={websocket}/>
+    {/each}
+  </div>
+
+  <TableComponent messages={websocket.statusMessages} />
 </div>
-
-<Table messages={websocket.statusMessages} />
