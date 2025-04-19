@@ -52,9 +52,18 @@ export const websocketStore = (url: string) => {
     }
   };
 
-  const sendPositionMessage = (key: string, pos: number) => {
+  const setPositionMessage = (key: string, pos: number) => {
     if (socket && socket.readyState === WebSocket.OPEN) {
-      let msg = '{"action": "rotate", "args":["' + key + '",' + pos + "]}";
+      let msg = '{"action": "setPosition", "args":["' + key + '",' + pos + "]}";
+      console.log(msg)
+      socket.send(msg);
+    }
+  }
+
+  const addPositionMessage = (key: string, pos: number) => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      let msg = '{"action": "addPosition", "args":["' + key + '",' + pos + "]}";
+      console.log(msg)
       socket.send(msg);
     }
   }
@@ -65,6 +74,7 @@ export const websocketStore = (url: string) => {
     subscribe,
     send,
     statusMessages,
-    sendPositionMessage,
+    setPositionMessage,
+    addPositionMessage,
   };
 };

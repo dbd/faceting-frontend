@@ -17,23 +17,32 @@
       x -= gravity;
     }
     let val = Math.asin(x / gravity) * (180 / Math.PI);
+    val = 90 + val;
     return val.toFixed(2);
   }
 </script>
 
-<Table striped={true} shadow={true} class="h-1.5">
-  <TableHead>
-    <TableHeadCell>Height Position</TableHeadCell>
-    <TableHeadCell>Rotation Angle</TableHeadCell>
-    <TableHeadCell>Pitch Angle</TableHeadCell>
-  </TableHead>
-  <TableBody>
-    {#each [...messages].reverse() as msg}
-      <TableBodyRow>
-        <TableBodyCell>{msg.heightPos}</TableBodyCell>
-        <TableBodyCell>{msg.rotationPos}</TableBodyCell>
-        <TableBodyCell>{arcSin(msg.gyroXAccel)}</TableBodyCell>
-      </TableBodyRow>
-    {/each}
-  </TableBody>
-</Table>
+<div class="">
+  <Table shadow={true} class="table-fixed">
+    <TableHead>
+      <TableHeadCell>Height Position</TableHeadCell>
+      <TableHeadCell>Rotation Angle</TableHeadCell>
+      <TableHeadCell>Pitch Angle</TableHeadCell>
+      <TableHeadCell>Pitch Angle</TableHeadCell>
+    </TableHead>
+  </Table>
+  <div class="overflow-y-auto max-h-[_40vh]">
+    <Table class="table-fixed" striped={true} shadow={true}>
+      <TableBody class="">
+        {#each [...messages].reverse() as msg}
+          <TableBodyRow>
+            <TableBodyCell>{msg.heightPos}</TableBodyCell>
+            <TableBodyCell>{msg.rotationPos}</TableBodyCell>
+            <TableBodyCell>{msg.tiltPos}</TableBodyCell>
+            <TableBodyCell>{arcSin(msg.gyroYAccel)}</TableBodyCell>
+          </TableBodyRow>
+        {/each}
+      </TableBody>
+    </Table>
+  </div>
+</div>

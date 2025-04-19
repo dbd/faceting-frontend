@@ -1,0 +1,54 @@
+<script lang="ts">
+  import {
+    Heading,
+    Button,
+    ButtonGroup,
+    Input,
+    DarkMode,
+    Label,
+    Card,
+    P,
+  } from "flowbite-svelte";
+  import { websocketStore, type Servo } from "$lib/store.svelte";
+  import TableComponent from "$lib/tableComponent.svelte";
+  import ServoCard from "$lib/cardComponent.svelte";
+
+  //const websocket = websocketStore("ws://10.0.0.163:8080/ws");
+  const websocket = websocketStore("ws://localhost:8080");
+  console.log(typeof websocket)
+
+  const PosSettings: Servo[] = [
+    {
+      id: "height",
+      name: "Height",
+      presets: [0, 50, 100, 500],
+      increments: [10, 25, 50, 100, 250],
+    },
+    {
+      id: "tilt",
+      name: "Pitch",
+      presets: [0, 32.5, 45, 60, 90],
+      increments: [5, 10, 15, 20, 45],
+    },
+    {
+      id: "rotation",
+      name: "Rotation",
+      presets: [0, 15, 45, 90],
+      increments: [5, 15, 30, 45, 60],
+    },
+  ];
+
+</script>
+
+<Heading tag="h1" class="text-center m-4">Bot Controller</Heading>
+<DarkMode />
+
+<div class="grid grid-cols-2 gap-4 m-4 place-content-center">
+  <div class="grid gap-4 justify-items-center">
+    {#each PosSettings as servo}
+      <ServoCard servo={servo} websocket={websocket}/>
+    {/each}
+  </div>
+
+  <TableComponent messages={websocket.statusMessages} />
+</div>

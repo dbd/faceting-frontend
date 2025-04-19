@@ -14,7 +14,6 @@ async def handler(websocket, path):
             'gyroYAccel':74+random.random(),
             'gyroZAccel':random.random(),
             }))
-        print(await websocket.recv())
 
 start_server = websockets.serve(handler, "localhost", 8080)
 
