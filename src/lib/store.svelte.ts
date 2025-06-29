@@ -7,6 +7,7 @@ export interface StatusMessage {
   gyroXAccel: number;
   gyroYAccel: number;
   gyroZAccel: number;
+  range: number;
 }
 
 export interface Servo {
