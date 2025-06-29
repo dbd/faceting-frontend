@@ -14,10 +14,10 @@
   import { websocketStore, type Servo } from "$lib/store.svelte";
   import TableComponent from "$lib/tableComponent.svelte";
   import ServoCard from "$lib/controlsComponent.svelte";
+  import { BellRingOutline, BadgeCheckOutline } from "flowbite-svelte-icons";
 
   const websocket = websocketStore("ws://10.0.0.163:8080/ws");
   //const websocket = websocketStore("ws://localhost:8080");
-  console.log(typeof websocket);
 
   const PosSettings: Servo[] = [
     {
@@ -67,15 +67,16 @@
   <div class="row-span-5 pr-10 w-full">
     <TableComponent messages={websocket.statusMessages} />
   </div>
-  <div class="border-2 w-screen mr-10 row-start-12">
-  <Heading
-    tag="h2"
-    class="text-center p-4 mt-10 col-span-2 "
-  >
-    Advanced
-  </Heading>
-  </div>
-  <Footer class="absolute bottom-0">
-    <DarkMode />
+  <Footer class="absolute bottom-0 grid grid-cols-2 w-full pb-2 pl-4 pr-4">
+    <DarkMode class="col-span-1" />
+    <div class="text-right grid col-span-1 justify-items-end">
+      {#if websocket.connected}
+        <BadgeCheckOutline class="text-green-400" size="xl" />
+      {:else}
+        <Button onclick={() => websocket.reconnect()}>
+          <BellRingOutline class="text-red-100" size="xl" />
+        </Button>
+      {/if}
+    </div>
   </Footer>
 </div>

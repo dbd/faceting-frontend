@@ -21,6 +21,7 @@ export const websocketStore = (url: string) => {
   const {subscribe, set, update} = writable<string>('');
   let socket: WebSocket | null = null;
   let statusMessages: Array<StatusMessage> = $state([]);
+  let connected: boolean = $state(false)
 
   const connect = () => {
     if (socket) return; // Prevent multiple connections
@@ -28,7 +29,7 @@ export const websocketStore = (url: string) => {
     socket = new WebSocket(url);
 
     socket.onopen = () => {
-      console.log('WebSocket connected');
+      connected = true;
     };
 
     socket.onmessage = (event) => {
@@ -38,11 +39,10 @@ export const websocketStore = (url: string) => {
         statusMessages.shift()
 
       }
-      set(event.data);
     };
 
     socket.onclose = () => {
-      console.log('WebSocket closed');
+      connected = false;
       socket = null;
     };
   };
@@ -71,11 +71,22 @@ export const websocketStore = (url: string) => {
 
   connect(); // Connect on store creation
 
+  const reconnect = () => {
+    if (!socket) {
+      console.log("Reconnecting to websocket")
+      connect()
+    }
+  }
+
   return {
     subscribe,
     send,
     statusMessages,
     setPositionMessage,
     addPositionMessage,
+    get connected() {
+      return connected;
+    },
+    reconnect,
   };
 };
