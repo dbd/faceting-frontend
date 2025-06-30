@@ -11,6 +11,9 @@
   let { messages }: { messages: Array<StatusMessage> } = $props();
 
   function arcSin(x: number) {
+    if (!x) {
+      return null;
+    }
     const gravity = 9.80665;
     x *= -1;
     if (x >= gravity) {
@@ -19,6 +22,16 @@
     let val = Math.asin(x / gravity) * (180 / Math.PI);
     val = 90 + val;
     return val.toFixed(2);
+  }
+
+  function getPosition(key: string, msg: StatusMessage) {
+    if (!msg.servoStatus) {
+      return null;
+    }
+    if (msg.servoStatus.has(key)) {
+      return msg.servoStatus.get(key).position;
+    }
+    return null;
   }
 </script>
 
@@ -32,16 +45,16 @@
       <TableHeadCell>Pitch Raw</TableHeadCell>
     </TableHead>
   </Table>
-  <div class="overflow-y-auto max-h-[_40vh]">
+  <div class="overflow-y-auto max-h-[_70vh]">
     <Table class="table-fixed" striped={true} shadow={true}>
       <TableBody class="">
         {#each [...messages].reverse() as msg}
-          <TableBodyRow>
+          <TableBodyRow class="h-14">
             <TableBodyCell>{msg.range}</TableBodyCell>
-            <TableBodyCell>{msg.heightPos}</TableBodyCell>
-            <TableBodyCell>{msg.rotationPos}</TableBodyCell>
+            <TableBodyCell>{getPosition("height", msg)}</TableBodyCell>
+            <TableBodyCell>{getPosition("rotation", msg)}</TableBodyCell>
             <TableBodyCell>{arcSin(msg.gyroYAccel)}</TableBodyCell>
-            <TableBodyCell>{msg.tiltPos}</TableBodyCell>
+            <TableBodyCell>{getPosition("tilt", msg)}</TableBodyCell>
           </TableBodyRow>
         {/each}
       </TableBody>

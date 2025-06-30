@@ -5,6 +5,9 @@
     Input,
     Label,
     Card,
+    Accordion,
+    AccordionItem,
+    Heading,
   } from "flowbite-svelte";
   import { type Servo } from "$lib/store.svelte";
   let { servo, websocket }: { servo: Servo; websocket: Any } = $props();
@@ -17,7 +20,7 @@
 
 <Card size="lg">
   <Label for={servo.id} class="mb-2 text-xl w-full">{servo.name}</Label>
-  <div class="grid grid-cols-4 gap-4 grid-rows-3 justify-items-center w-full">
+  <div class="grid grid-cols-4 gap-4 grid-rows-4 justify-items-center w-full">
     <Input type="number" bind:value={posValue} class="col-span-3" />
     <Button onclick={() => sendPos(servo.id, posValue)}>
       Set Pos
