@@ -27,7 +27,11 @@ export const websocketStore = (url: string) => {
   let socket: WebSocket | null = null;
   let statusMessages: Array<StatusMessage> = $state([]);
   let connected: boolean = $state(false)
-  const emptyMap: Map<string, ServoStatus> = new Map<string, ServoStatus>([["height", {"moving": false, "torqueEnabled": false, "position": null}]])
+  const emptyMap: Map<string, ServoStatus> = new Map<string, ServoStatus>([
+    ["height", {"moving": false, "torqueEnabled": false, "position": null}],
+    ["tilt", {"moving": false, "torqueEnabled": false, "position": null}],
+    ["rotation", {"moving": false, "torqueEnabled": false, "position": null}],
+  ])
   let latestStatus: StatusMessage = $state({"servoStatus": emptyMap})
 
   const connect = () => {
@@ -45,17 +49,18 @@ export const websocketStore = (url: string) => {
     };
 
     socket.onmessage = (event) => {
-      let latestStatus: StatusMessage = JSON.parse(event.data)
-      let unmarshalled = new Map(Object.entries(latestStatus.servoStatus))
+      let msg: StatusMessage = JSON.parse(event.data)
+      let unmarshalled = new Map(Object.entries(msg.servoStatus))
       let servoStatus: Map<string, ServoStatus> = new Map<string, ServoStatus>()
       function setServoStatus(value: any, key: string, map: any) {
         let nm = new Map<string, ServoStatus>(Object.entries(value));
-        for (const key of nm.keys()) {
-          servoStatus.set(key, nm.get(key));
+        for (const [key, value] of nm) {
+          servoStatus.set(key, value);
         }
       }
       unmarshalled.forEach(setServoStatus);
-      latestStatus.servoStatus = servoStatus
+      msg.servoStatus = servoStatus
+      latestStatus = msg
       statusMessages.push(latestStatus)
       if (statusMessages.length > 50) {
         statusMessages.shift()
@@ -89,7 +94,35 @@ export const websocketStore = (url: string) => {
 
   const addPositionMessage = (key: string, pos: number) => {
     if (socket && socket.readyState === WebSocket.OPEN) {
-      let msg = '{"action": "addPosition", "args":["' + key + '",' + pos + "]}";
+      let t = {
+        action: "addPosition",
+        args: [key, pos]
+      }
+      let msg = JSON.stringify(t)
+      console.log(msg)
+      socket.send(msg);
+    }
+  }
+
+  const setTorqueMessage = (key: string, toggle: boolean) => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      let t = {
+        action: "setTorque",
+        args: [key, toggle]
+      }
+      let msg = JSON.stringify(t)
+      console.log(msg)
+      socket.send(msg);
+    }
+  }
+
+  const rebootMessage = (key: string) => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      let t = {
+        action: "reboot",
+        args: [key]
+      }
+      let msg = JSON.stringify(t)
       console.log(msg)
       socket.send(msg);
     }
@@ -110,6 +143,8 @@ export const websocketStore = (url: string) => {
     statusMessages,
     setPositionMessage,
     addPositionMessage,
+    setTorqueMessage,
+    rebootMessage,
     get connected() {
       return connected;
     },

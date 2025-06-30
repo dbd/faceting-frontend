@@ -14,7 +14,10 @@
   import { websocketStore, type Servo } from "$lib/store.svelte";
   import TableComponent from "$lib/tableComponent.svelte";
   import ServoCard from "$lib/controlsComponent.svelte";
-  import { ExclamationCircleOutline, BadgeCheckOutline } from "flowbite-svelte-icons";
+  import {
+    ExclamationCircleOutline,
+    BadgeCheckOutline,
+  } from "flowbite-svelte-icons";
 
   const websocket = websocketStore("ws://10.0.0.163:8080/ws");
   //const websocket = websocketStore("ws://localhost:8080");
@@ -39,7 +42,7 @@
       name: "Rotation",
       presets: [0, 15, 30, 45, 60, 90, 120, 135],
       increments: [-60, -45, -30, -15, -5, 5, 15, 30, 45, 60],
-      raw: false
+      raw: false,
     },
   ];
 </script>
