@@ -9,25 +9,41 @@
     TimelineStepper,
   } from "flowbite-svelte";
   import { type Servo } from "$lib/store.svelte";
-  import { RefreshOutline } from "flowbite-svelte-icons";
+  import {
+    ArrowRightAltSolid,
+    BackwardStepSolid,
+    CloseCircleSolid,
+    ForwardStepSolid,
+    PlaySolid,
+  } from "flowbite-svelte-icons";
+  import type { Component } from "svelte";
   let { websocket }: { websocket: Any } = $props();
 
   interface step {
     id: number;
     label: string;
     description: string;
+    runnable: boolean;
     status: "completed" | "pending" | "current";
+    angle?: number;
+    rotation?: number;
+    icon?: Component | null;
+    iconClass?: string | null;
   }
   let body: string = $state("");
-  let parsed: Arrary<string> = $state([]);
+  let parsed: Array<string> = $state([]);
   let steps: Array<step> = $state([
     {
       id: 0,
       label: "Enter an ASC file to start",
       description: "",
-      status: "pending",
+      runnable: false,
+      status: "current",
+      icon: ArrowRightAltSolid,
+      iconClass: "text-yellow-500",
     },
   ]);
+  let index: number = $state(0);
 
   function parseASC(body: string): void {
     steps = [];
@@ -44,47 +60,126 @@
         case "GemCad":
           break;
         case "g":
+          index = +line.slice(2).split(" ")[0];
           steps.push({
             id: i,
             label: "Gear Index",
-            description: line.slice(2),
+            description: index.toString(),
             status: "completed",
+            runnable: false,
           });
           break;
         case "y":
           steps.push({
             id: i,
             label: "Axis of Symmetry",
-            description: line.slice(2),
+            description: line.slice(2).split(" ")[0],
             status: "completed",
+            runnable: false,
           });
           break;
         case "a":
-          let status: "pending" | "current" = "pending";
           for (let i = 2; i < line.slice(2).split(" ").length - 1; i++) {
+            let s: step = {} as step;
+            s.id = i;
+            s.status = current ? "current" : "pending";
+            s.icon = current ? ArrowRightAltSolid : CloseCircleSolid;
+            s.iconClass = current ? "text-yellow-500" : "text-red-400";
+            if (wasPavilion && line.slice(2).split(" ")[0][0] !== "-") {
+              wasPavilion = false;
+              let p: step = { ...s };
+              p.label = "Flip stone";
+              p.description = "Transition to crown/girdle";
+              p.runnable = false;
+              steps.push(p);
+            }
+            s.angle = Math.abs(+line.slice(2).split(" ")[0]);
+            s.rotation = +line.slice(2).split(" ")[i];
+            s.label = "Cut Angle: " + s.angle.toString();
+            s.description = "Rotation: " + s.rotation.toString();
+            s.runnable = true;
+            steps.push(s);
             if (current) {
-              status = "current";
               current = false;
             }
-            if (wasPavilion && line.slice(2).split(" ")[0][0] !== '-') {
-              wasPavilion = false
-            steps.push({
-              id: i,
-              label: "Flip stone",
-              description: "Transition to crown/girdle",
-              status: status,
-            });
-            }
-            steps.push({
-              id: i,
-              label: "Cut Angle: " + line.slice(2).split(" ")[0].slice(1),
-              description: "Rotation: " + line.slice(2).split(" ")[i],
-              status: status,
-            });
           }
           break;
       }
       parsed.push(split[i]);
+    }
+  }
+
+  function nextStep(): void {
+    for (let i = 0; i < steps.length; i++) {
+      if (steps[i].status === "current") {
+        let currentStep: step = steps[i];
+        currentStep.status = "completed";
+        currentStep.icon = null;
+        currentStep.iconClass = null;
+        steps[i] = currentStep;
+        if (i + 1 >= steps.length) {
+          break;
+        }
+        let next: step = steps[i + 1];
+        next.status = "current";
+        next.icon = ArrowRightAltSolid;
+        next.iconClass = "text-yellow-500";
+        steps[i + 1] = next;
+        break;
+      }
+    }
+  }
+
+  function previousStep(): void {
+    for (let i = 0; i < steps.length; i++) {
+      if (steps[i].status === "current") {
+        if (i <= 2) {
+          break;
+        }
+        let currentStep: step = steps[i];
+        currentStep.status = "pending";
+        currentStep.icon = CloseCircleSolid;
+        currentStep.iconClass = "text-red-200";
+        steps[i] = currentStep;
+        if (i - 1 <= 0) {
+          break;
+        }
+        let prevStep: step = steps[i - 1];
+        prevStep.status = "current";
+        prevStep.icon = ArrowRightAltSolid;
+        prevStep.iconClass = "text-yellow-500";
+        steps[i - 1] = prevStep;
+        break;
+      }
+      if (i === steps.length - 1) {
+        let currentStep: step = steps[i];
+        currentStep.status = "current";
+        currentStep.icon = ArrowRightAltSolid;
+        currentStep.iconClass = "text-yellow-500";
+        steps[i] = currentStep;
+      }
+    }
+  }
+
+  function runStep(): void {
+    let currentStep: step = {} as step;
+    for (let i = 0; i < steps.length; i++) {
+      if (steps[i].status === "current") {
+        currentStep = steps[i];
+        break;
+      }
+    }
+    if (
+      currentStep &&
+      currentStep.runnable &&
+      currentStep.rotation &&
+      currentStep.angle
+    ) {
+      websocket.setPositionMessage("tilt", currentStep.angle);
+      console.log(currentStep.rotation);
+      console.log(index);
+      let adjustedRotation: number = (currentStep.rotation / index) * 360;
+      websocket.setPositionMessage("rotation", adjustedRotation, true);
     }
   }
 </script>
@@ -99,19 +194,37 @@
     <Textarea
       id="diagramText"
       placeholder="Enter ASC"
-      rows={6}
+      rows={14}
       name="diagramMessage"
       bind:value={body}
-      class="col-start-1"
+      class="col-start-1 h-96"
     >
       {#snippet footer()}
-        <div class="flex items-center justify-between">
+        <div class="flex justify-between">
+          <Button
+            name="Submit"
+            onclick={() => {
+              parseASC(body);
+            }}>Parse</Button
+          >
           <Toolbar embedded>
-            <Button
-              name="Submit"
+            <ToolbarButton
+              name="Previous"
               onclick={() => {
-                parseASC(body);
-              }}>Parse</Button
+                previousStep();
+              }}><BackwardStepSolid class="h-6 w-6" /></ToolbarButton
+            >
+            <ToolbarButton
+              name="Play"
+              onclick={() => {
+                runStep();
+              }}><PlaySolid class="h-6 w-6" /></ToolbarButton
+            >
+            <ToolbarButton
+              name="Next"
+              onclick={() => {
+                nextStep(body);
+              }}><ForwardStepSolid class="h-6 w-6" /></ToolbarButton
             >
           </Toolbar>
         </div>

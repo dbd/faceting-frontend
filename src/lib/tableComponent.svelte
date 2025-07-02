@@ -35,7 +35,9 @@
   }
 </script>
 
-<div class="">
+<div
+  class="w-full border-1 border-gray-300 shadow-md shadow-gray-200 rounded-lg place-self-stretch p-4"
+>
   <Table shadow={true} class="table-fixed">
     <TableHead>
       <TableHeadCell>Height Position (mm)</TableHeadCell>
