@@ -81,48 +81,48 @@ export const websocketStore = (url: string) => {
   };
 
   const setPositionMessage = (key: string, pos: number, raw: boolean) => {
-      let t = {
-        action: "setPosition",
-        args: [key, pos, raw]
-      }
-      let msg = JSON.stringify(t)
-      console.log(msg)
+    let t = {
+      action: "setPosition",
+      args: [key, pos, raw]
+    }
+    let msg = JSON.stringify(t)
+    console.log(msg)
     if (socket && socket.readyState === WebSocket.OPEN) {
       socket.send(msg);
     }
   }
 
   const addPositionMessage = (key: string, pos: number) => {
-      let t = {
-        action: "addPosition",
-        args: [key, pos]
-      }
-      let msg = JSON.stringify(t)
-      console.log(msg)
+    let t = {
+      action: "addPosition",
+      args: [key, pos]
+    }
+    let msg = JSON.stringify(t)
+    console.log(msg)
     if (socket && socket.readyState === WebSocket.OPEN) {
       socket.send(msg);
     }
   }
 
   const setTorqueMessage = (key: string, toggle: boolean) => {
-      let t = {
-        action: "setTorque",
-        args: [key, toggle]
-      }
-      let msg = JSON.stringify(t)
-      console.log(msg)
+    let t = {
+      action: "setTorque",
+      args: [key, toggle]
+    }
+    let msg = JSON.stringify(t)
+    console.log(msg)
     if (socket && socket.readyState === WebSocket.OPEN) {
       socket.send(msg);
     }
   }
 
   const rebootMessage = (key: string) => {
-      let t = {
-        action: "reboot",
-        args: [key]
-      }
-      let msg = JSON.stringify(t)
-      console.log(msg)
+    let t = {
+      action: "reboot",
+      args: [key]
+    }
+    let msg = JSON.stringify(t)
+    console.log(msg)
     if (socket && socket.readyState === WebSocket.OPEN) {
       socket.send(msg);
     }
