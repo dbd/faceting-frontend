@@ -45,7 +45,7 @@
       <TableHeadCell>Pitch Raw</TableHeadCell>
     </TableHead>
   </Table>
-  <div class="overflow-y-auto max-h-[_70vh]">
+  <div class="overflow-y-auto max-h-[_60vh]">
     <Table class="table-fixed" striped={true} shadow={true}>
       <TableBody class="">
         {#each [...messages].reverse() as msg}
