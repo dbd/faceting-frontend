@@ -33,7 +33,9 @@
   });
 </script>
 
-<Card size="lg">
+<div
+  class="w-full border-1 border-gray-300 shadow-md shadow-gray-200 rounded-lg place-self-stretch p-4"
+>
   <Label for={servo.id} class="mb-2 text-xl w-full">{servo.name}</Label>
   <div class="grid grid-cols-4 gap-4 grid-rows-3 justify-items-center w-full">
     <Input type="number" bind:value={posValue} class="col-span-3" />
@@ -107,4 +109,4 @@
       </AccordionItem>
     </Accordion>
   </div>
-</Card>
+</div>

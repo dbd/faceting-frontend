@@ -48,7 +48,7 @@
   ];
 </script>
 
-<div class="grid grid-cols-2 place-items-center gap-2">
+<div class="grid grid-cols-2 place-items-center gap-2 pl-5 pr-5">
   <Heading
     tag="h2"
     class="text-center p-4 mt-10 col-start-1"
@@ -56,7 +56,7 @@
     Controls
   </Heading>
   <div
-    class="inline-grid gap-4 justify-items-center col-span-1 row-span-5 col-start-1"
+    class="inline-grid gap-4 col-span-1 row-span-5 col-start-1 row-start-2"
   >
     {#each PosSettings as servo}
       <ServoCard {servo} {websocket} />
@@ -69,9 +69,7 @@
   >
     Diagram
   </Heading>
-  <div class="pr-10 col-span-1 flex">
     <DiagramInput  websocket={websocket} />
-  </div>
   <Heading
     tag="h2"
     class="text-center p-4 mt-10 col-span-1 col-start-2"
