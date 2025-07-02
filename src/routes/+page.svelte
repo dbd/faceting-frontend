@@ -27,31 +27,31 @@
     {
       id: "height",
       name: "Height",
-      presets: [0, 50, 100, 500],
-      increments: [-250, -100, -50, -25, -10, 10, 25, 50, 100, 250],
+      presets: [],
+      increments: [-10, -5, -1, 1, 5, 10],
       raw: true,
     },
     {
       id: "tilt",
       name: "Pitch",
       presets: [0, 32.5, 45, 60, 90],
-      increments: [-45, -20, -15, -10, -5, 5, 10, 15, 20, 45],
+      increments: [],
       raw: true,
     },
     {
       id: "rotation",
       name: "Rotation",
       presets: [0, 15, 30, 45, 60, 90, 120, 135],
-      increments: [-60, -45, -30, -15, -5, 5, 15, 30, 45, 60],
+      increments: [],
       raw: false,
     },
   ];
 </script>
 
 <div>
-  <div class="grid grid-cols-2 justify-items-center gap-2 pl-5 pr-5 mt-10">
+  <div class="grid grid-cols-2 justify-items-center gap-2 pl-5 mt-10">
     <div class="col-start-1">
-      <Heading tag="h2" class="text-center p-4">Controls</Heading>
+      <Heading tag="h3" class="text-center p-4">Controls</Heading>
       <div
         class="inline-grid gap-4 col-span-1 row-span-5"
       >
@@ -61,18 +61,18 @@
       </div>
     </div>
 
-    <div class="col-start-2">
+    <div class="col-start-2 pr-10">
       <Heading
-        tag="h2"
+        tag="h3"
         class="text-center p-4"
       >
         Diagram
       </Heading>
       <DiagramInput {websocket} />
-      <Heading tag="h2" class="text-center p-4 col-span-1 col-start-2">
+      <Heading tag="h3" class="text-center p-4 col-span-1 col-start-2">
         Positioning
       </Heading>
-      <div class="row-span-3 pr-10 w-full">
+      <div class="row-span-3 ">
         <TableComponent messages={websocket.statusMessages} />
       </div>
     </div>
@@ -82,7 +82,7 @@
     <DarkMode class="col-span-1" />
     <div class="text-right grid col-span-1 justify-items-end">
       {#if websocket.connected}
-        <BadgeCheckOutline class="text-green-400" size="xl" />
+        <BadgeCheckOutline class="text-green-400" size="md" />
       {:else}
         <Button onclick={() => websocket.reconnect()}>
           <ExclamationCircleOutline class="text-red-100" size="md" />

@@ -34,22 +34,25 @@
 </script>
 
 <div
-  class="w-full border-1 border-gray-300 shadow-md shadow-gray-200 rounded-lg place-self-stretch p-4"
+  class="w-full border-1 border-gray-300 shadow-md shadow-gray-200 rounded-lg  p-4"
 >
-  <Label for={servo.id} class="mb-2 text-xl w-full">{servo.name}</Label>
-  <div class="grid grid-cols-4 gap-4 grid-rows-3 justify-items-center w-full">
-    <Input type="number" bind:value={posValue} class="col-span-3" />
-    {#if servo.raw}
-      <Checkbox bind:checked={rawValue}>Use Raw Values</Checkbox>
-    {/if}
+  <Label for={servo.id} class="mb-2 text-md">{servo.name}</Label>
+  <div class="grid grid-cols-3 gap-4 grid-rows-3 justify-items-center">
+    <Input type="number" bind:value={posValue} class="col-span-2" size="sm" />
     <Button
       onclick={() => setPos(servo.id, posValue, rawValue)}
-      class="col-span-4 w-full"
+      class=" w-full"
     >
       Set Pos
     </Button>
+    {#if servo.raw}
+      <div class="flex justify-center flex-col items-center">
+        <P class="mb-2 text-md w-full">Raw values:</P>
+        <Toggle bind:checked={rawValue} />
+      </div>
+    {/if}
     {#if servo.presets.length > 0}
-      <div class="col-span-4">
+      <div class="col-span-3">
         <Label for="bg">Presets</Label>
         <ButtonGroup id="bg">
           {#each servo.presets as preset}
@@ -61,7 +64,7 @@
       </div>
     {/if}
     {#if servo.increments.length > 0}
-      <div class="col-span-4">
+      <div class="col-span-3">
         <Label for="bg">Increments</Label>
         <ButtonGroup id="bg">
           {#each servo.increments as increment}
@@ -76,8 +79,7 @@
       <AccordionItem>
         {#snippet header()}Motor Controls{/snippet}
         <label class="flex justify-between cursor-pointer p-3">
-          <span
-            class="ms-3 text-lg font-medium text-gray-900 dark:text-gray-300"
+          <span class="ms-3 font-medium text-gray-900 dark:text-gray-300"
             >Torque Enabled:
           </span>
           <Toggle
@@ -88,12 +90,11 @@
           ></Toggle>
         </label>
         <div class="flex justify-between cursor-pointer p-3">
-          <span
-            class="ms-3 text-lg font-medium text-gray-900 dark:text-gray-300"
+          <span class="ms-3 font-medium text-gray-900 dark:text-gray-300"
             >Moving:
           </span>
           <P
-            class="ms-3 pr-2 text-lg capitalize font-medium text-gray-900 dark:text-gray-300"
+            class="ms-3 pr-2 capitalize font-medium text-gray-900 dark:text-gray-300"
             >{websocket.latestStatus.servoStatus.get(servo.id).moving}</P
           >
         </div>
