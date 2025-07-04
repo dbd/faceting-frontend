@@ -57,7 +57,7 @@
       {/each}
     </div>
 
-    <div class="col-start-2 pr-10 max-h-[550px] flex flex-col">
+    <div class="col-start-2 pr-10 max-h-[calc(45vh)] flex flex-col">
       <div class="flex-none">
         <Heading tag="h3" class="text-center">Diagram</Heading>
         <DiagramInput {websocket} />
