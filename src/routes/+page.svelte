@@ -15,6 +15,7 @@
   import TableComponent from "$lib/tableComponent.svelte";
   import ServoCard from "$lib/controlsComponent.svelte";
   import DiagramInput from "$lib/diagramInput.svelte";
+  import Background from "$lib/background.svelte";
   import {
     ExclamationCircleOutline,
     BadgeCheckOutline,
@@ -55,23 +56,12 @@
 </script>
 
 <div>
-  {#each spots as spot}
-    <div
-      class="absolute z-0 bg-[url('/static/d20.svg')] bg-no-repeat bg-contain opacity-30 bg-gradient-to-r from-indigo-600 via-pink-600 to-purple-600"
-      style="
-        top: {spot.top}%;
-        left: {spot.left}%;
-        width: {spot.size}px;
-        height: {spot.size}px;
-        transform: rotate({spot.rotation}deg);
-      "
-    ></div>
-  {/each}
+  <Background/>
   <div
-    class="grid grid-cols-2 justify-items-stretch p-5 max-h-500px h-full relative z-10"
+    class="grid grid-cols-2 justify-items-stretch p-5 max-h-500px h-full relative z-20"
   >
-    <div class="col-start-1 relative">
-      <Heading tag="h3" class="text-center">Controls</Heading>
+    <div class="col-start-1">
+      <Heading tag="h3" class="text-center text-shadow-white text-shadow-md">Controls</Heading>
       {#each PosSettings as servo}
         <ServoCard {servo} {websocket} />
       {/each}
@@ -79,11 +69,11 @@
 
     <div class="col-start-2 pr-10 max-h-[calc(45vh)] flex flex-col">
       <div class="flex-none">
-        <Heading tag="h3" class="text-center">Diagram</Heading>
+        <Heading tag="h3" class="text-center text-shadow-white text-shadow-md">Diagram</Heading>
         <DiagramInput {websocket} />
       </div>
       <div class="h-full flex flex-col">
-        <Heading tag="h3" class="text-center p-4">Positioning</Heading>
+        <Heading tag="h3" class="text-center p-4 text-shadow-white/100 text-shadow-md">Positioning</Heading>
         <TableComponent messages={websocket.statusMessages} />
       </div>
     </div>

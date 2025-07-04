@@ -36,7 +36,7 @@
 </script>
 
 <div
-  class="h-full border-1 border-gray-300 shadow-md shadow-gray-200 rounded-lg p-4 opacity-100 bg-white"
+  class="h-full border-1 border-gray-300 dark:border-gray-500 shadow-md shadow-gray-200 dark:shadow-gray-700 rounded-lg p-4 opacity-100 bg-white dark:bg-gray-800"
 >
   <Table shadow={true} class="table-fixed">
     <TableHead>

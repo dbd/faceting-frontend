@@ -189,7 +189,7 @@
 </script>
 
 <div
-  class="bg-white border-1 border-gray-300 shadow-md shadow-gray-200 rounded-lg place-self-stretch p-4 grid grid-cols-2 gap-6 m-2"
+  class="border-1 border-gray-300 dark:border-gray-500 shadow-md shadow-gray-200 dark:shadow-gray-700 rounded-lg p-4 opacity-100 bg-white dark:bg-gray-800 place-self-stretch grid grid-cols-2 gap-6 m-2"
 >
   <div class="col-start-1">
     <Label for="diagramText" class="mb-2 text-xl w-full col-start-1 flex-none"
@@ -219,7 +219,7 @@
   <div class="cols-start-2 relative flex flex-col">
     <Label for="diagramText" class="text-xl">Parsed ASC</Label>
     <div
-      class="pl-10 grow max-h-80 overflow-auto border-2 border-gray-100 rounded-lg m-2 p-2"
+      class="pl-10 grow max-h-80 overflow-auto border-2 border-gray-100 dark:border-gray-500 rounded-lg m-2 p-2"
     >
       <TimelineStepper {steps} />
     </div>
