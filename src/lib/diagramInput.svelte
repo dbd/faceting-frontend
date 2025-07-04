@@ -192,34 +192,32 @@
   class="border-1 border-gray-300 shadow-md shadow-gray-200 rounded-lg place-self-stretch p-4 grid grid-cols-2 gap-6 m-2"
 >
   <div class="col-start-1">
-    <Label for="diagramText" class="mb-2 text-xl w-full col-start-1"
+    <Label for="diagramText" class="mb-2 text-xl w-full col-start-1 flex-none"
       >Faceting Diagram</Label
     >
     <Textarea
       id="diagramText"
       placeholder="Enter ASC"
-      rows={14}
       name="diagramMessage"
       bind:value={body}
-      class="col-start-1 h-96"
+      class="h-96 flex flex-col"
+      innerClass="grow"
+      textareaClass="resize-none"
     >
       {#snippet footer()}
-        <div class="flex justify-between">
+        <div class="">
           <Button
             name="Submit"
             onclick={() => {
               parseASC(body);
             }}>Parse</Button
           >
-          <Toolbar embedded></Toolbar>
         </div>
       {/snippet}
     </Textarea>
   </div>
   <div class="cols-start-2 relative flex flex-col">
-    <Label for="diagramText" class="text-xl"
-      >Parsed ASC</Label
-    >
+    <Label for="diagramText" class="text-xl">Parsed ASC</Label>
     <div
       class="pl-10 grow max-h-80 overflow-auto border-2 border-gray-100 rounded-lg m-2 p-2"
     >
