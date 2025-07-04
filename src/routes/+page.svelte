@@ -49,36 +49,29 @@
 </script>
 
 <div>
-  <div class="grid grid-cols-2 justify-items-center gap-2 pl-5 mt-10">
+  <div class="grid grid-cols-2 justify-items-stretch p-5">
     <div class="col-start-1">
-      <Heading tag="h3" class="text-center p-4">Controls</Heading>
-      <div
-        class="inline-grid gap-4 col-span-1 row-span-5"
-      >
-        {#each PosSettings as servo}
-          <ServoCard {servo} {websocket} />
-        {/each}
-      </div>
+      <Heading tag="h3" class="text-center">Controls</Heading>
+      {#each PosSettings as servo}
+        <ServoCard {servo} {websocket} />
+      {/each}
     </div>
 
     <div class="col-start-2 pr-10">
-      <Heading
-        tag="h3"
-        class="text-center p-4"
-      >
-        Diagram
-      </Heading>
-      <DiagramInput {websocket} />
-      <Heading tag="h3" class="text-center p-4 col-span-1 col-start-2">
-        Positioning
-      </Heading>
-      <div class="row-span-3 ">
+      <div>
+        <Heading tag="h3" class="text-center">Diagram</Heading>
+        <DiagramInput {websocket} />
+      </div>
+      <div>
+        <Heading tag="h3" class="text-center p-4">
+          Positioning
+        </Heading>
         <TableComponent messages={websocket.statusMessages} />
       </div>
     </div>
   </div>
 
-  <Footer class="absolute bottom-0 grid grid-cols-2 w-full h-10">
+  <Footer class="absolute bottom-0 grid grid-cols-2 w-full h-10 bg-gray-100">
     <DarkMode class="col-span-1" />
     <div class="text-right grid col-span-1 justify-items-end">
       {#if websocket.connected}

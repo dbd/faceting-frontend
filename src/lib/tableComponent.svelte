@@ -36,7 +36,7 @@
 </script>
 
 <div
-  class="w-full border-1 border-gray-300 shadow-md shadow-gray-200 rounded-lg place-self-stretch p-4"
+  class="border-1 border-gray-300 shadow-md shadow-gray-200 rounded-lg place-self-stretch p-4"
 >
   <Table shadow={true} class="table-fixed">
     <TableHead>
@@ -47,11 +47,11 @@
       <TableHeadCell>Pitch Raw</TableHeadCell>
     </TableHead>
   </Table>
-  <div class="overflow-y-auto max-h-[_60vh]">
+  <div class="max-h-100 overflow-y-auto">
     <Table class="table-fixed" striped={true} shadow={true}>
       <TableBody class="">
         {#each [...messages].reverse() as msg}
-          <TableBodyRow class="h-14">
+          <TableBodyRow class="">
             <TableBodyCell>{msg.range}</TableBodyCell>
             <TableBodyCell>{getPosition("height", msg)}</TableBodyCell>
             <TableBodyCell>{getPosition("rotation", msg)}</TableBodyCell>

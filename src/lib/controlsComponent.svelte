@@ -34,80 +34,76 @@
 </script>
 
 <div
-  class="w-full border-1 border-gray-300 shadow-md shadow-gray-200 rounded-lg  p-4"
+  class="border-1 border-gray-300 shadow-md shadow-gray-200 rounded-lg p-4 m-2"
 >
   <Label for={servo.id} class="mb-2 text-md">{servo.name}</Label>
-  <div class="grid grid-cols-3 gap-4 grid-rows-3 justify-items-center">
-    <Input type="number" bind:value={posValue} class="col-span-2" size="sm" />
-    <Button
-      onclick={() => setPos(servo.id, posValue, rawValue)}
-      class=" w-full"
-    >
-      Set Pos
-    </Button>
-    {#if servo.raw}
-      <div class="flex justify-center flex-col items-center">
-        <P class="mb-2 text-md w-full">Raw values:</P>
-        <Toggle bind:checked={rawValue} />
-      </div>
-    {/if}
-    {#if servo.presets.length > 0}
-      <div class="col-span-3">
-        <Label for="bg">Presets</Label>
-        <ButtonGroup id="bg">
-          {#each servo.presets as preset}
-            <Button onclick={() => setPos(servo.id, preset, rawValue)}
-              >{preset}</Button
-            >
-          {/each}
-        </ButtonGroup>
-      </div>
-    {/if}
-    {#if servo.increments.length > 0}
-      <div class="col-span-3">
-        <Label for="bg">Increments</Label>
-        <ButtonGroup id="bg">
-          {#each servo.increments as increment}
-            <Button onclick={() => addPos(servo.id, increment)}
-              >{increment}</Button
-            >
-          {/each}
-        </ButtonGroup>
-      </div>
-    {/if}
-    <Accordion class="col-span-4 w-full">
-      <AccordionItem>
-        {#snippet header()}Motor Controls{/snippet}
-        <label class="flex justify-between cursor-pointer p-3">
-          <span class="ms-3 font-medium text-gray-900 dark:text-gray-300"
-            >Torque Enabled:
-          </span>
-          <Toggle
-            bind:checked={torqueEnabled}
-            onchange={() => {
-              websocket.setTorqueMessage(servo.id, torqueEnabled);
-            }}
-          ></Toggle>
-        </label>
-        <div class="flex justify-between cursor-pointer p-3">
-          <span class="ms-3 font-medium text-gray-900 dark:text-gray-300"
-            >Moving:
-          </span>
-          <P
-            class="ms-3 pr-2 capitalize font-medium text-gray-900 dark:text-gray-300"
-            >{websocket.latestStatus.servoStatus.get(servo.id).moving}</P
-          >
-        </div>
-        <label class="flex justify-between cursor-pointer p-3">
-          <span
-            class="ms-3 text-lg font-medium text-gray-900 dark:text-gray-300"
-            >Reboot:
-          </span>
-          <Button onclick={() => websocket.rebootMessage(servo.id)}>
-            <RefreshOutline class="text-red-100" size="md" />
-          </Button>
-        </label>
-      </AccordionItem>
-    </Accordion>
+  <div class="flex justify-between">
+    <ButtonGroup class="w-full">
+      <Input type="number" bind:value={posValue} size="sm" />
+      <Button
+        onclick={() => setPos(servo.id, posValue, rawValue)}
+        size="sm"
+        class="text-nowrap"
+        color="primary"
+      >
+        Set Pos
+      </Button>
+    </ButtonGroup>
   </div>
+  {#if servo.raw}
+    <label class="flex justify-between cursor-pointer pt-3">
+      <span class="text-gray-900 dark:text-gray-300">Send raw values: </span>
+      <Toggle bind:checked={rawValue} />
+    </label>
+  {/if}
+  {#if servo.presets.length > 0}
+    <div class="col-span-3 pt-5 pb-5">
+      <Label for="bg">Presets</Label>
+      <ButtonGroup id="bg">
+        {#each servo.presets as preset}
+          <Button onclick={() => setPos(servo.id, preset, rawValue)}
+            >{preset}</Button
+          >
+        {/each}
+      </ButtonGroup>
+    </div>
+  {/if}
+  {#if servo.increments.length > 0}
+    <div class="col-span-3 pt-5 pb-5">
+      <Label for="bg">Increments</Label>
+      <ButtonGroup id="bg">
+        {#each servo.increments as increment}
+          <Button onclick={() => addPos(servo.id, increment)}
+            >{increment}</Button
+          >
+        {/each}
+      </ButtonGroup>
+    </div>
+  {/if}
+  <Accordion class="col-span-4 w-full">
+    <AccordionItem>
+      {#snippet header()}Motor Controls{/snippet}
+      <label class="flex justify-between cursor-pointer p-3">
+        <span class="text-gray-900 dark:text-gray-300">Torque Enabled: </span>
+        <Toggle
+          bind:checked={torqueEnabled}
+          onchange={() => {
+            websocket.setTorqueMessage(servo.id, torqueEnabled);
+          }}
+        ></Toggle>
+      </label>
+      <div class="flex justify-between cursor-pointer p-3">
+        <span class="text-gray-900 dark:text-gray-300">Moving: </span>
+        <P class="ms-3 pr-2 capitalize text-gray-900 dark:text-gray-300"
+          >{websocket.latestStatus.servoStatus.get(servo.id).moving}</P
+        >
+      </div>
+      <label class="flex justify-between cursor-pointer p-3">
+        <span class="text-gray-900 dark:text-gray-300">Reboot: </span>
+        <Button onclick={() => websocket.rebootMessage(servo.id)}>
+          <RefreshOutline class="text-red-100" size="md" />
+        </Button>
+      </label>
+    </AccordionItem>
+  </Accordion>
 </div>

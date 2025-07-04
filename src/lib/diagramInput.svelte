@@ -4,11 +4,10 @@
     Label,
     Button,
     Toolbar,
-    ToolbarGroup,
-    ToolbarButton,
+    ButtonGroup,
     TimelineStepper,
+    Toggle,
   } from "flowbite-svelte";
-  import { type Servo } from "$lib/store.svelte";
   import {
     ArrowRightAltSolid,
     BackwardStepSolid,
@@ -17,7 +16,7 @@
     PlaySolid,
   } from "flowbite-svelte-icons";
   import type { Component } from "svelte";
-  let { websocket }: { websocket: Any } = $props();
+  let { websocket }: { websocket: any } = $props();
 
   interface step {
     id: number;
@@ -31,6 +30,8 @@
     iconClass?: string | null;
   }
   let body: string = $state("");
+  let skipAngle: boolean = $state(false);
+  let prevRunStep: step = $state({} as step);
   let parsed: Array<string> = $state([]);
   let steps: Array<step> = $state([
     {
@@ -175,17 +176,20 @@
       currentStep.rotation &&
       currentStep.angle
     ) {
-      websocket.setPositionMessage("tilt", currentStep.angle);
-      console.log(currentStep.rotation);
-      console.log(index);
+      if (!skipAngle) {
+        websocket.setPositionMessage("tilt", currentStep.angle);
+      } else if (prevRunStep.angle !== currentStep.angle) {
+        websocket.setPositionMessage("tilt", currentStep.angle);
+      }
       let adjustedRotation: number = (currentStep.rotation / index) * 360;
       websocket.setPositionMessage("rotation", adjustedRotation, true);
+      prevRunStep = currentStep;
     }
   }
 </script>
 
 <div
-  class="border-1 border-gray-300 shadow-md shadow-gray-200 rounded-lg place-self-stretch p-4 grid grid-cols-2 gap-6"
+  class="border-1 border-gray-300 shadow-md shadow-gray-200 rounded-lg place-self-stretch p-4 grid grid-cols-2 gap-6 m-2"
 >
   <div class="col-start-1">
     <Label for="diagramText" class="mb-2 text-xl w-full col-start-1"
@@ -207,34 +211,42 @@
               parseASC(body);
             }}>Parse</Button
           >
-          <Toolbar embedded>
-            <ToolbarButton
-              name="Previous"
-              onclick={() => {
-                previousStep();
-              }}><BackwardStepSolid class="h-6 w-6" /></ToolbarButton
-            >
-            <ToolbarButton
-              name="Play"
-              onclick={() => {
-                runStep();
-              }}><PlaySolid class="h-6 w-6" /></ToolbarButton
-            >
-            <ToolbarButton
-              name="Next"
-              onclick={() => {
-                nextStep(body);
-              }}><ForwardStepSolid class="h-6 w-6" /></ToolbarButton
-            >
-          </Toolbar>
+          <Toolbar embedded></Toolbar>
         </div>
       {/snippet}
     </Textarea>
   </div>
-  <div class="cols-start-2 h-96 pl-10 overflow-y-scroll">
-    <Label for="diagramText" class="mb-2 text-xl w-full col-start-1"
+  <div class="cols-start-2 relative flex flex-col">
+    <Label for="diagramText" class="text-xl"
       >Parsed ASC</Label
     >
-    <TimelineStepper {steps} />
+    <div
+      class="pl-10 grow max-h-80 overflow-auto border-2 border-gray-100 rounded-lg m-2 p-2"
+    >
+      <TimelineStepper {steps} />
+    </div>
+    <div class="flex justify-between">
+      <ButtonGroup id="bg">
+        <Button
+          name="Previous"
+          onclick={() => {
+            previousStep();
+          }}><BackwardStepSolid class="h-6 w-6" /></Button
+        >
+        <Button
+          name="Play"
+          onclick={() => {
+            runStep();
+          }}><PlaySolid class="h-6 w-6" /></Button
+        >
+        <Button
+          name="Next"
+          onclick={() => {
+            nextStep();
+          }}><ForwardStepSolid class="h-6 w-6" /></Button
+        >
+      </ButtonGroup>
+      <Toggle bind:checked={skipAngle}>Skip sending angle</Toggle>
+    </div>
   </div>
 </div>
