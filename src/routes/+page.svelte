@@ -47,12 +47,6 @@
       raw: false,
     },
   ];
-  const spots = Array.from({ length: 100 }, () => ({
-    top: Math.random() * 100,
-    left: Math.random() * 100,
-    size: 30 + Math.random() * 30,
-    rotation: Math.random() * 360,
-  }));
 </script>
 
 <div>
@@ -61,7 +55,7 @@
     class="grid grid-cols-2 justify-items-stretch p-5 max-h-500px h-full relative z-20"
   >
     <div class="col-start-1">
-      <Heading tag="h3" class="text-center text-shadow-white text-shadow-md">Controls</Heading>
+      <Heading tag="h3" class="text-center">Controls</Heading>
       {#each PosSettings as servo}
         <ServoCard {servo} {websocket} />
       {/each}
@@ -69,11 +63,11 @@
 
     <div class="col-start-2 pr-10 max-h-[calc(45vh)] flex flex-col">
       <div class="flex-none">
-        <Heading tag="h3" class="text-center text-shadow-white text-shadow-md">Diagram</Heading>
+        <Heading tag="h3" class="text-center">Diagram</Heading>
         <DiagramInput {websocket} />
       </div>
       <div class="h-full flex flex-col">
-        <Heading tag="h3" class="text-center p-4 text-shadow-white/100 text-shadow-md">Positioning</Heading>
+        <Heading tag="h3" class="text-center p-4">Positioning</Heading>
         <TableComponent messages={websocket.statusMessages} />
       </div>
     </div>

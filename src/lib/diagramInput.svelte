@@ -176,6 +176,9 @@
       currentStep.rotation &&
       currentStep.angle
     ) {
+      let torqueEnabled = websocket.latestStatus["height"].torqueEnabled
+      websocket.setTorqueMessage("height", true)
+      websocket.setPositionMessage("height", websocket.latestStatus.range, false)
       if (!skipAngle) {
         websocket.setPositionMessage("tilt", currentStep.angle);
       } else if (prevRunStep.angle !== currentStep.angle) {
@@ -184,6 +187,7 @@
       let adjustedRotation: number = (currentStep.rotation / index) * 360;
       websocket.setPositionMessage("rotation", adjustedRotation, true);
       prevRunStep = currentStep;
+      websocket.setTorqueMessage("height", torqueEnabled)
     }
   }
 </script>
