@@ -18,6 +18,10 @@
   let posValue = $state(0);
   let rawValue = $state(false);
   let torqueEnabled = $state(false);
+  
+  if (!servo.raw) {
+    rawValue = true
+  }
 
   function setPos(key: string, pos: number, raw: boolean): void {
     websocket.setPositionMessage(key, pos, raw);

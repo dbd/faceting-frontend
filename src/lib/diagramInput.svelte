@@ -24,8 +24,8 @@
     description: string;
     runnable: boolean;
     status: "completed" | "pending" | "current";
-    angle?: number;
-    rotation?: number;
+    angle: number|null;
+    rotation: number|null;
     icon?: Component | null;
     iconClass?: string | null;
   }
@@ -42,6 +42,8 @@
       status: "current",
       icon: ArrowRightAltSolid,
       iconClass: "text-yellow-500",
+      rotation: null,
+      angle: null,
     },
   ]);
   let index: number = $state(0);
@@ -80,7 +82,7 @@
           });
           break;
         case "a":
-          for (let i = 2; i < line.slice(2).split(" ").length - 1; i++) {
+          for (let i = 2; i < line.slice(2).split(" ").length; i++) {
             let s: step = {} as step;
             s.id = i;
             s.status = current ? "current" : "pending";
@@ -162,32 +164,55 @@
     }
   }
 
-  function runStep(): void {
+  function sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  async function runStep(): Promise<void> {
     let currentStep: step = {} as step;
+    console.log("beginning")
     for (let i = 0; i < steps.length; i++) {
       if (steps[i].status === "current") {
         currentStep = steps[i];
         break;
       }
     }
+    console.log(currentStep)
     if (
       currentStep &&
       currentStep.runnable &&
-      currentStep.rotation &&
-      currentStep.angle
+      currentStep.rotation !== null &&
+      currentStep.angle !== null
     ) {
-      let torqueEnabled = websocket.latestStatus["height"].torqueEnabled
-      websocket.setTorqueMessage("height", true)
-      websocket.setPositionMessage("height", websocket.latestStatus.range, false)
+      let torqueEnabled =
+        websocket.latestStatus.servoStatus.get("height").torqueEnabled;
+      let originalHeight = websocket.latestStatus.range;
+      websocket.setTorqueMessage("height", true);
+      websocket.setPositionMessage(
+        "height",
+        websocket.latestStatus.range + 15,
+        false,
+      );
+      await sleep(1000);
       if (!skipAngle) {
         websocket.setPositionMessage("tilt", currentStep.angle);
       } else if (prevRunStep.angle !== currentStep.angle) {
         websocket.setPositionMessage("tilt", currentStep.angle);
       }
-      let adjustedRotation: number = (currentStep.rotation / index) * 360;
+      let adjustedRotation: number = 0;
+      if (currentStep.rotation !== 0) {
+        adjustedRotation = (currentStep.rotation / index) * 360;
+      }
       websocket.setPositionMessage("rotation", adjustedRotation, true);
       prevRunStep = currentStep;
-      websocket.setTorqueMessage("height", torqueEnabled)
+      console.log(websocket.latestStatus.servoStatus.get("rotation").moving);
+      await sleep(1000);
+      while (websocket.latestStatus.servoStatus.get("rotation").moving) {
+        await sleep(1000);
+      }
+      console.log(websocket.latestStatus.servoStatus.get("rotation").moving);
+      websocket.setPositionMessage("height", originalHeight + 10, false);
+      websocket.setTorqueMessage("height", torqueEnabled);
     }
   }
 </script>
