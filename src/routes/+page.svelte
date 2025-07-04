@@ -49,7 +49,7 @@
 </script>
 
 <div>
-  <div class="grid grid-cols-2 justify-items-stretch p-5">
+  <div class="grid grid-cols-2 justify-items-stretch p-5 max-h-500px h-full">
     <div class="col-start-1">
       <Heading tag="h3" class="text-center">Controls</Heading>
       {#each PosSettings as servo}
@@ -57,12 +57,12 @@
       {/each}
     </div>
 
-    <div class="col-start-2 pr-10">
-      <div>
+    <div class="col-start-2 pr-10 max-h-[550px] flex flex-col">
+      <div class="flex-none">
         <Heading tag="h3" class="text-center">Diagram</Heading>
         <DiagramInput {websocket} />
       </div>
-      <div>
+      <div class="h-full flex flex-col ">
         <Heading tag="h3" class="text-center p-4">
           Positioning
         </Heading>
