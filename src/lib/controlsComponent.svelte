@@ -34,7 +34,7 @@
 </script>
 
 <div
-  class="border-1 border-gray-300 shadow-md shadow-gray-200 rounded-lg p-4 m-2"
+  class="z-10 bg-white relative border-1 border-gray-300 shadow-md shadow-gray-200 rounded-lg p-4 m-2"
 >
   <Label for={servo.id} class="mb-2 text-md">{servo.name}</Label>
   <div class="flex justify-between">

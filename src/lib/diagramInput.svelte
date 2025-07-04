@@ -189,7 +189,7 @@
 </script>
 
 <div
-  class="border-1 border-gray-300 shadow-md shadow-gray-200 rounded-lg place-self-stretch p-4 grid grid-cols-2 gap-6 m-2"
+  class="bg-white border-1 border-gray-300 shadow-md shadow-gray-200 rounded-lg place-self-stretch p-4 grid grid-cols-2 gap-6 m-2"
 >
   <div class="col-start-1">
     <Label for="diagramText" class="mb-2 text-xl w-full col-start-1 flex-none"
@@ -200,9 +200,9 @@
       placeholder="Enter ASC"
       name="diagramMessage"
       bind:value={body}
+      rows={14}
       class="h-96 flex flex-col"
       innerClass="grow"
-      textareaClass="resize-none"
     >
       {#snippet footer()}
         <div class="">

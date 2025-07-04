@@ -46,11 +46,31 @@
       raw: false,
     },
   ];
+  const spots = Array.from({ length: 100 }, () => ({
+    top: Math.random() * 100,
+    left: Math.random() * 100,
+    size: 30 + Math.random() * 30,
+    rotation: Math.random() * 360,
+  }));
 </script>
 
 <div>
-  <div class="grid grid-cols-2 justify-items-stretch p-5 max-h-500px h-full">
-    <div class="col-start-1">
+  {#each spots as spot}
+    <div
+      class="absolute z-0 bg-[url('/static/d20.svg')] bg-no-repeat bg-contain opacity-30 bg-gradient-to-r from-indigo-600 via-pink-600 to-purple-600"
+      style="
+        top: {spot.top}%;
+        left: {spot.left}%;
+        width: {spot.size}px;
+        height: {spot.size}px;
+        transform: rotate({spot.rotation}deg);
+      "
+    ></div>
+  {/each}
+  <div
+    class="grid grid-cols-2 justify-items-stretch p-5 max-h-500px h-full relative z-10"
+  >
+    <div class="col-start-1 relative">
       <Heading tag="h3" class="text-center">Controls</Heading>
       {#each PosSettings as servo}
         <ServoCard {servo} {websocket} />
@@ -62,10 +82,8 @@
         <Heading tag="h3" class="text-center">Diagram</Heading>
         <DiagramInput {websocket} />
       </div>
-      <div class="h-full flex flex-col ">
-        <Heading tag="h3" class="text-center p-4">
-          Positioning
-        </Heading>
+      <div class="h-full flex flex-col">
+        <Heading tag="h3" class="text-center p-4">Positioning</Heading>
         <TableComponent messages={websocket.statusMessages} />
       </div>
     </div>
