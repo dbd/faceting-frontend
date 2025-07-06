@@ -7,6 +7,7 @@
     ButtonGroup,
     TimelineStepper,
     Toggle,
+    Select,
   } from "flowbite-svelte";
   import {
     ArrowRightAltSolid,
@@ -24,8 +25,8 @@
     description: string;
     runnable: boolean;
     status: "completed" | "pending" | "current";
-    angle: number|null;
-    rotation: number|null;
+    angle: number | null;
+    rotation: number | null;
     icon?: Component | null;
     iconClass?: string | null;
   }
@@ -47,6 +48,16 @@
     },
   ]);
   let index: number = $state(0);
+  let placeholder: string = "Select an option or paste below...";
+  let selected = $state("Select an item or paste below");
+  let options = [
+    { value: "d4", name: "D4" },
+    { value: "d6", name: "D6" },
+    { value: "d8", name: "D8" },
+    { value: "d10", name: "D10" },
+    { value: "d12", name: "D12" },
+    { value: "d20", name: "D20" },
+  ];
 
   function parseASC(body: string): void {
     steps = [];
@@ -170,14 +181,14 @@
 
   async function runStep(): Promise<void> {
     let currentStep: step = {} as step;
-    console.log("beginning")
+    console.log("beginning");
     for (let i = 0; i < steps.length; i++) {
       if (steps[i].status === "current") {
         currentStep = steps[i];
         break;
       }
     }
-    console.log(currentStep)
+    console.log(currentStep);
     if (
       currentStep &&
       currentStep.runnable &&
@@ -215,26 +226,45 @@
       websocket.setTorqueMessage("height", torqueEnabled);
     }
   }
+
+  function updateDiagramInput() {
+    const loadASC = async () => {
+      let response = await fetch(`/asc/${selected}.asc`);
+      let text = await response.text();
+    body = text
+    };
+    loadASC();
+  }
 </script>
 
 <div
   class="border-1 border-gray-300 dark:border-gray-500 shadow-md shadow-gray-200 dark:shadow-gray-700 rounded-lg p-4 opacity-100 bg-white dark:bg-gray-800 place-self-stretch grid grid-cols-2 gap-6 m-2"
 >
   <div class="col-start-1">
-    <Label for="diagramText" class="mb-2 text-xl w-full col-start-1 flex-none"
+    <Label for="diagramText" class="mb-2 text-xl w-full col-start-1"
       >Faceting Diagram</Label
     >
+    <Label for="diagramText" class="mb-2 text-md w-full col-start-1"
+      >Select a dice or paste below:</Label
+    >
+    <Select
+      items={options}
+      bind:value={selected}
+      onchange={() => {
+        updateDiagramInput();
+      }}
+    />
     <Textarea
       id="diagramText"
       placeholder="Enter ASC"
       name="diagramMessage"
       bind:value={body}
       rows={14}
-      class="h-96 flex flex-col"
+      class="h-96 flex flex-col mt-1"
       innerClass="grow"
     >
       {#snippet footer()}
-        <div class="">
+        <div class="flex-auto align-middle">
           <Button
             name="Submit"
             onclick={() => {
