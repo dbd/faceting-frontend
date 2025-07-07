@@ -18,9 +18,9 @@
   let posValue = $state(0);
   let rawValue = $state(false);
   let torqueEnabled = $state(false);
-  
+
   if (!servo.raw) {
-    rawValue = true
+    rawValue = true;
   }
 
   function setPos(key: string, pos: number, raw: boolean): void {
@@ -43,7 +43,16 @@
   <Label for={servo.id} class="mb-2 text-md">{servo.name}</Label>
   <div class="flex justify-between">
     <ButtonGroup class="w-full">
-      <Input type="number" bind:value={posValue} size="sm" />
+      <Input
+        type="number"
+        bind:value={posValue}
+        size="sm"
+        onkeydown={(event) => {
+          if (event.key === "Enter") {
+            setPos(servo.id, posValue, rawValue);
+          }
+        }}
+      />
       <Button
         onclick={() => setPos(servo.id, posValue, rawValue)}
         size="sm"
@@ -77,8 +86,13 @@
       <Label for="bg">Increments</Label>
       <ButtonGroup id="bg">
         {#each servo.increments as increment}
-          <Button onclick={() => addPos(servo.id, increment)}
-            >{increment}</Button
+          <Button
+            onclick={() =>
+              setPos(
+                servo.id,
+                websocket.latestStatus.range + increment,
+                rawValue,
+              )}>{increment}</Button
           >
         {/each}
       </ButtonGroup>
