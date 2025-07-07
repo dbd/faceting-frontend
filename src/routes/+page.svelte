@@ -2,14 +2,8 @@
   import {
     Heading,
     Button,
-    ButtonGroup,
-    Input,
     DarkMode,
-    Label,
-    Card,
-    P,
     Footer,
-    BottomNavItem,
   } from "flowbite-svelte";
   import { websocketStore, type Servo } from "$lib/store.svelte";
   import TableComponent from "$lib/tableComponent.svelte";
@@ -42,7 +36,7 @@
     {
       id: "rotation",
       name: "Rotation",
-      presets: [0, 15, 30, 45, 60, 90, 120, 135],
+      presets: [0, 15, 30, 45, 60, 90, 120, 135, 180, 270, 360],
       increments: [],
       raw: false,
     },
@@ -50,7 +44,7 @@
 </script>
 
 <div>
-  <Background/>
+  <Background />
   <div
     class="grid grid-cols-2 justify-items-stretch p-5 max-h-500px h-full relative z-20"
   >

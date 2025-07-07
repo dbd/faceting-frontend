@@ -7,13 +7,11 @@
     ButtonGroup,
     Input,
     Label,
-    Card,
-    Checkbox,
     P,
   } from "flowbite-svelte";
   import { type Servo } from "$lib/store.svelte";
   import { RefreshOutline } from "flowbite-svelte-icons";
-  let { servo, websocket }: { servo: Servo; websocket: Any } = $props();
+  let { servo, websocket }: { servo: Servo; websocket: any } = $props();
 
   let posValue = $state(0);
   let rawValue = $state(false);
