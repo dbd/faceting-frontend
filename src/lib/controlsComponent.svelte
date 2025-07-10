@@ -8,6 +8,7 @@
     Input,
     Label,
     P,
+    Banner,
   } from "flowbite-svelte";
   import { type Servo } from "$lib/store.svelte";
   import { RefreshOutline } from "flowbite-svelte-icons";
@@ -16,13 +17,18 @@
   let posValue = $state(0);
   let rawValue = $state(false);
   let torqueEnabled = $state(false);
+  let showBanner = $state(false);
 
   if (!servo.raw) {
     rawValue = true;
   }
 
   function setPos(key: string, pos: number, raw: boolean): void {
-    websocket.setPositionMessage(key, pos, raw);
+    if (!torqueEnabled) {
+      showBanner = true;
+    } else {
+      websocket.setPositionMessage(key, pos, raw);
+    }
   }
   function addPos(key: string, pos: number): void {
     websocket.addPositionMessage(key, pos);
@@ -38,6 +44,15 @@
 <div
   class="border-1 border-gray-300 dark:border-gray-500 shadow-md shadow-gray-200 dark:shadow-gray-700 rounded-lg p-4 opacity-100 bg-white dark:bg-gray-800 m-4"
 >
+  {#if showBanner}
+    <Banner
+      onclick={() => {
+        showBanner = false;
+      }}
+    >
+      <span>Torque not enabled</span>
+    </Banner>
+  {/if}
   <Label for={servo.id} class="mb-2 text-md">{servo.name}</Label>
   <div class="flex justify-between">
     <ButtonGroup class="w-full">
