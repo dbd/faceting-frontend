@@ -32,12 +32,9 @@
   }
   let body: string = $state("");
   let skipAngle: boolean = $state(false);
-<<<<<<< HEAD
   let scrollbox: HTMLElement = $state({} as HTMLElement);
   let scrollTop: number = $state(0);
-=======
   let skipHeight: boolean = $state(false);
->>>>>>> 51ecbc8 (skip height)
   let prevRunStep: step = $state({} as step);
   let parsed: Array<string> = $state([]);
   let steps: Array<step> = $state([
