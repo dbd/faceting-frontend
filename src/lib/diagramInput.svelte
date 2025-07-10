@@ -155,7 +155,7 @@
         let currentStep: step = steps[i];
         currentStep.status = "pending";
         currentStep.icon = CloseCircleSolid;
-        currentStep.iconClass = "text-red-200";
+        currentStep.iconClass = "text-red-400";
         steps[i] = currentStep;
         scrollbox.scrollTop = (i * 80) - 160
         if (i - 1 <= 0) {
