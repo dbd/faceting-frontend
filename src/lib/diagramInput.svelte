@@ -32,6 +32,8 @@
   }
   let body: string = $state("");
   let skipAngle: boolean = $state(false);
+  let scrollbox: HTMLElement = $state({} as HTMLElement);
+  let scrollTop: number = $state(0);
   let prevRunStep: step = $state({} as step);
   let parsed: Array<string> = $state([]);
   let steps: Array<step> = $state([
@@ -48,7 +50,6 @@
     },
   ]);
   let index: number = $state(0);
-  let placeholder: string = "Select an option or paste below...";
   let selected = $state("Select an item or paste below");
   let options = [
     { value: "d4", name: "D4" },
@@ -131,6 +132,7 @@
         currentStep.icon = null;
         currentStep.iconClass = null;
         steps[i] = currentStep;
+        scrollbox.scrollTop = i * 80
         if (i + 1 >= steps.length) {
           break;
         }
@@ -155,6 +157,7 @@
         currentStep.icon = CloseCircleSolid;
         currentStep.iconClass = "text-red-200";
         steps[i] = currentStep;
+        scrollbox.scrollTop = (i * 80) - 160
         if (i - 1 <= 0) {
           break;
         }
@@ -277,7 +280,7 @@
   </div>
   <div class="cols-start-2 relative flex flex-col">
     <Label for="diagramText" class="text-xl">Parsed ASC</Label>
-    <div
+    <div bind:this={scrollbox} onscroll={() => scrollTop = scrollbox.scrollTop}
       class="pl-10 grow max-h-80 overflow-auto border-2 border-gray-100 dark:border-gray-500 rounded-lg m-2 p-2"
     >
       <TimelineStepper {steps} />
