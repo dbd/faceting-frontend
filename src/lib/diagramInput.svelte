@@ -32,8 +32,12 @@
   }
   let body: string = $state("");
   let skipAngle: boolean = $state(false);
+<<<<<<< HEAD
   let scrollbox: HTMLElement = $state({} as HTMLElement);
   let scrollTop: number = $state(0);
+=======
+  let skipHeight: boolean = $state(false);
+>>>>>>> 51ecbc8 (skip height)
   let prevRunStep: step = $state({} as step);
   let parsed: Array<string> = $state([]);
   let steps: Array<step> = $state([
@@ -201,13 +205,15 @@
       let torqueEnabled =
         websocket.latestStatus.servoStatus.get("height").torqueEnabled;
       let originalHeight = websocket.latestStatus.range;
-      websocket.setTorqueMessage("height", true);
-      websocket.setPositionMessage(
-        "height",
-        websocket.latestStatus.range + 15,
-        false,
-      );
-      await sleep(1000);
+      if (!skipHeight) {
+        websocket.setTorqueMessage("height", true);
+        websocket.setPositionMessage(
+          "height",
+          websocket.latestStatus.range + 15,
+          false,
+        );
+        await sleep(1000);
+      }
       if (!skipAngle) {
         websocket.setPositionMessage("tilt", currentStep.angle);
       } else if (prevRunStep.angle !== currentStep.angle) {
@@ -220,13 +226,10 @@
       websocket.setPositionMessage("rotation", adjustedRotation, true);
       prevRunStep = currentStep;
       console.log(websocket.latestStatus.servoStatus.get("rotation").moving);
-      await sleep(1000);
-      while (websocket.latestStatus.servoStatus.get("rotation").moving) {
-        await sleep(1000);
-      }
-      console.log(websocket.latestStatus.servoStatus.get("rotation").moving);
+      if (!skipHeight) {
       websocket.setPositionMessage("height", originalHeight + 10, false);
       websocket.setTorqueMessage("height", torqueEnabled);
+      }
     }
   }
 
@@ -234,7 +237,7 @@
     const loadASC = async () => {
       let response = await fetch(`/asc/${selected}.asc`);
       let text = await response.text();
-    body = text
+      body = text;
     };
     loadASC();
   }
@@ -306,7 +309,10 @@
           }}><ForwardStepSolid class="h-6 w-6" /></Button
         >
       </ButtonGroup>
-      <Toggle bind:checked={skipAngle}>Skip sending angle</Toggle>
+      <div class="flex flex-col">
+        <Toggle bind:checked={skipAngle}>Skip sending angle</Toggle>
+        <Toggle bind:checked={skipHeight}>Skip raising height</Toggle>
+      </div>
     </div>
   </div>
 </div>
